@@ -452,7 +452,9 @@ export class GameMap {
         this.mapStream.stream.index = 0;
         this.mapStream.serializeMsg(MsgType.Map, this.msg);
 
-        renderMap(this.msg);
+        renderMap(this.msg).catch((err) => {
+            this.game.logger.warn("Failed to render map image", err);
+        });
     }
 
     resetRound() {

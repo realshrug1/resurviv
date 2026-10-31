@@ -335,12 +335,15 @@ export class Game {
         return Boolean(this.m_config.get("profile")?.canUseDeveloper);
     }
 
+    onConnectionLost?: () => boolean;
+
     tryJoinGame(
         url: string,
         matchPriv: string,
         questPriv: string,
         onConnectFail: () => void,
         battleRoyaleMode = false,
+        reconnecting = false,
     ) {
         if (!this.connecting && !this.connected && !this.initialized) {
             if (this.m_ws) {
@@ -353,6 +356,8 @@ export class Game {
             }
             this.connecting = true;
             this.connected = false;
+            this.m_disconnectMsg = "";
+            this.m_gameOver = false;
             try {
                 this.m_ws = new WebSocket(url);
                 this.m_ws.binaryType = "arraybuffer";
@@ -404,7 +409,7 @@ export class Game {
                         msgStream.stream.buffer.byteLength,
                     );
                 };
-                this.m_ws.onclose = () => {
+                this.m_ws.onclose = (e) => {
                     const displayingStats = this.m_uiManager?.displayingStats;
                     const connecting = this.connecting;
                     const connected = this.connected;
@@ -413,6 +418,14 @@ export class Game {
                     if (connecting) {
                         onConnectFail();
                     } else if (connected && !this.m_gameOver && !displayingStats) {
+                        const lostConnection =
+                            !this.m_disconnectMsg && (this.initialized || reconnecting);
+                        if (lostConnection && this.onConnectionLost?.()) {
+                            console.warn(
+                                `Game connection lost (code ${e.code}), reconnecting`,
+                            );
+                            return;
+                        }
                         const errMsg = this.m_disconnectMsg || "index-host-closed";
                         this.onQuit(errMsg);
                     }

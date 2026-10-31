@@ -225,6 +225,22 @@ export interface ConfigType {
      */
     netSyncTps: number;
 
+    gameLifecycle: {
+        abandonedRoomTimeoutMs: number;
+        emptyRoomTimeoutMs: number;
+        idlePublicRoomTimeoutMs: number;
+        joinTokenGraceMs: number;
+        stoppedWorkerTtlMs: number;
+        maxIdleWorkers: number;
+        reconnectGraceMs: number;
+    };
+
+    gameNetwork: {
+        maxBackpressureBytes: number;
+        metricsLogIntervalMs: number;
+        slowTickLogIntervalMs: number;
+    };
+
     /**
      * If games should all run in the same process.
      * Or spawn a new process for each game.

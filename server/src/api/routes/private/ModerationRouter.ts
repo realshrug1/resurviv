@@ -1,4 +1,3 @@
-import { createHash } from "node:crypto";
 import { and, desc, eq, inArray, lt, ne, or } from "drizzle-orm";
 import { alias } from "drizzle-orm/pg-core";
 import { Hono } from "hono";
@@ -17,6 +16,7 @@ import {
 } from "../../../../../shared/types/moderation";
 import { util } from "../../../../../shared/utils/util";
 import { Config } from "../../../config";
+import { hashIp } from "../../../utils/hashIp";
 import { validateUserName } from "../../../utils/serverHelpers";
 import type { SaveGameBody } from "../../../utils/types";
 import { server } from "../../apiServer";
@@ -623,9 +623,4 @@ export async function logPlayerIPs(data: SaveGameBody["matchData"]) {
     }
 }
 
-const salt = Config.secrets.SURVEV_IP_SECRET;
-export function hashIp(ip: string) {
-    return createHash("sha256")
-        .update(salt + ip)
-        .digest("hex");
-}
+export { hashIp };
