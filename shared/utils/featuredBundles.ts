@@ -51,13 +51,14 @@ const FEATURED_BUNDLE_ANCHOR_MS = Date.UTC(
 );
 
 const DAY_MS = 24 * 60 * 60 * 1000;
+const HOUR_MS = 60 * 60 * 1000;
 
 /*
  * Page 1 = 7 days.
- * Pages 2 + 3 = 1 day.
+ * Pages 2 + 3 = 6 hours.
  */
 const RANDOM_BUNDLE_DURATION_DAYS = 7;
-const GENERATED_BUNDLE_DURATION_DAYS = 1;
+const GENERATED_BUNDLE_DURATION_HOURS = 6;
 
 /*
  * Possible featured-bundle discounts.
@@ -67,11 +68,34 @@ const GENERATED_BUNDLE_DURATION_DAYS = 1;
  * everyone sees the same discount for that slot.
  */
 const FEATURED_BUNDLE_DISCOUNTS = [
-    0,
+    7,
+    6.7,
+    8,
+    9,
     10,
+    11,
+    12,
+    13,
+    14,
+    14,
+    14,
+    14,
+    14,
+    14,
+    14,
+    14,
+    14,
+    14,
+    14,
+    14,
     15,
+    15,
+    17,
+    17,
+    19,
     20,
-    25,
+    20,
+    20,
 ] as const;
 
 /*
@@ -117,6 +141,7 @@ const RANDOM_BUNDLE_EXCLUDED_OUTFITS = new Set([
     "outfitLifeTroll",
     "outfitLifeTroll2",
     "outfitLivingGalaxy",
+    "outfitIkouIronbelt",
 
     // Ranked / season rewards
     "outfitTopOnePercent",
@@ -177,12 +202,12 @@ const BATTLE_PASS_OUTFITS = new Set(
 );
 
 export const bundleMinPrice: Record<Rarity, number> = {
-    [Rarity.Stock]: 100,
-    [Rarity.Common]: 100,
-    [Rarity.Uncommon]: 100,
+    [Rarity.Stock]: 0,
+    [Rarity.Common]: 150,
+    [Rarity.Uncommon]: 350,
     [Rarity.Rare]: 500,
-    [Rarity.Epic]: 500,
-    [Rarity.Mythic]: 1500,
+    [Rarity.Epic]: 750,
+    [Rarity.Mythic]: 1000,
 };
 
 type BundleWindow = {
@@ -621,7 +646,7 @@ function createGeneratedBundle(
          * actual offer window.
          */
         durationDays:
-            GENERATED_BUNDLE_DURATION_DAYS,
+            GENERATED_BUNDLE_DURATION_HOURS / 24,
     };
 }
 
@@ -668,7 +693,7 @@ export function getFeaturedBundleOffers(
      * their own 24-hour schedule.
      */
     const dailyWindow = getBundleWindow(
-        GENERATED_BUNDLE_DURATION_DAYS,
+        GENERATED_BUNDLE_DURATION_HOURS / 24,
         now,
     );
 
